@@ -148,7 +148,7 @@ function fillData(target_selector, template_selector, data) {
                 return;
             itm.textContent = value;
             if(typeof value === 'number'){
-                itm.textContent = value.toLocaleString('de-DE');
+                itm.textContent = value.toLocaleString('de-DE', {minimumFractionDigits: 2, maximumFractionDigits: 2});
             }
             if(typeof value === 'string' && value.match(/^\d\d\d\d\-[0-1]\d\-\d\d$/gm)){
                 itm.textContent = value;// new Date(value).toLocaleDateString('de-DE');
