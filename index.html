@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MobileSalesOrder</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="node_modules/bootswatch/dist/flatly/bootstrap.min.css">
+    <link rel="stylesheet" href="helper.css">
+    <link rel="stylesheet" href="custom.css">
+    <link rel="stylesheet" href="/node_modules/font-awesome/css/font-awesome.min.css">
+    <script src="node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="node_modules/underscore/underscore-min.js"></script>
+    <script src="index.js"></script>
+</head>
+<body class="bg-light">
+<div class="container">
+
+
+    <h1>Kundenaufträge</h1>
+    <table class="table">
+        <thead>
+        <tr>
+            <th></th>
+            <th class="table-sortable" data-header="DocNum">Auftragsnummer</th>
+            <th class="table-sortable" data-header="CardCode">Kundennr.</th>
+            <th class="table-sortable" data-header="CardName">Kunden Name</th>
+            <th class="table-sortable" data-header="DocDate">Datum</th>
+            <th data-header="DocTotal" class="table-sortable text-right">Betrag</th>
+        </tr>
+        </thead>
+        <tbody id="overview-body">
+
+        </tbody>
+    </table>
+    <div class="loader">
+        <i class="fa fa-spin fa-cog"></i>
+    </div>
+
+    <div class="row paging">
+        <div class="col-lg-6">
+            <a href="#" class="btn btn-primary btn-block" id="prev_page"><i class="fa fa-arrow-left"></i> Zurück</a>
+        </div>
+        <div class="col-lg-6">
+            <a href="#" class="btn btn-primary btn-block" id="next_page">Nächste <i class="fa fa-arrow-right"></i></a>
+        </div>
+    </div>
+</div>
+</body>
+
+
+<template id="sales-order-overview-row">
+    <tr>
+        <td class=""><a href="#" class="iag-arrow" ><i class="fa fa-arrow-right"></i></a></td>
+        <td class="DocEntry" style="display: none;"></td>
+        <td class="DocNum"></td>
+        <td class="CardCode"></td>
+        <td class="CardName"></td>
+        <td class="DocDate"></td>
+        <td class="DocTotal text-right"></td>
+    </tr>
+</template>
+</html>
