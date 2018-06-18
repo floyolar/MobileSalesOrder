@@ -1,8 +1,22 @@
+function getOffset(obj) {
+    var offsetLeft = 0;
+    var offsetTop = 0;
+    do {
+        if (!isNaN(obj.offsetLeft)) {
+            offsetLeft += obj.offsetLeft;
+        }
+        if (!isNaN(obj.offsetTop)) {
+            offsetTop += obj.offsetTop;
+        }
+    } while(obj = obj.offsetParent );
+    return {left: offsetLeft, top: offsetTop};
+}
 
-function fillData(target_selector, template_selector, data, callback) {
+function fillData(target_selector, template_selector, data, callback, skip_clear_items) {
     var target = document.querySelector(target_selector);
     var rows = $(target_selector);
-    rows.empty();
+    if(!skip_clear_items)
+        rows.empty();
     var template = document.querySelector(template_selector);
     for (var i = 0; i < data.length; i++) {
         var clone = document.importNode(template.content, true);

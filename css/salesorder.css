@@ -1,0 +1,13 @@
+div.document-lines{
+    margin-top: 25px;
+}
+tr.doc-total-line{
+    border-top: 3px solid #dee2e6;
+}
+div.sign{
+    margin-top: 25px;
+}
+canvas#sign-canvas{
+    background: #fff;
+    border: 2px solid #dee2e6;
+}
