@@ -1,5 +1,5 @@
 var documentData = null;
-
+var sign_data = '';
 $(document).ready(function () {
     var urlParams = new URLSearchParams(window.location.search);
     if (!urlParams.has("DocEntry")) {
@@ -27,10 +27,21 @@ function prepareSignCavas() {
 
     var canvas = document.getElementById('sign-canvas');
 
+    if (canvas.getContext)
+        var ctx = canvas.getContext('2d');
+    var img = new Image;
+    img.onload = function(){
+        ctx.drawImage(img,0,0); // Or at whatever offset you like
+    };
+
     function resizeCanvas() {
         var offset = getOffset(canvas);
         canvas.width = window.innerWidth - offset.left * 2;
         canvas.height = canvas.width * 9 / 16;
+        var prev_data = sign_data;//localStorage.getItem('sign-data');
+        if(prev_data && prev_data !== ""){
+            img.src = prev_data;
+        }
         drawDate();
     }
 
@@ -41,18 +52,28 @@ function prepareSignCavas() {
     });
 
 
-    if (canvas.getContext)
-        var ctx = canvas.getContext('2d');
 
     drawDate();
 
     canvas.addEventListener("mousemove", draw, false);
+
     canvas.addEventListener("mouseup", function mouseUp(event) {
         mouseState = 0;
+        temp_save_sign();
     }, false);
     canvas.addEventListener("mousedown", touchStart, false);
     canvas.addEventListener("touchstart", touchStart, false);
     canvas.addEventListener("touchmove", draw, false);
+    canvas.addEventListener("touchend", function () {
+        temp_save_sign();
+    });
+
+
+    function temp_save_sign() {
+        //localStorage.setItem("sign-data", LZString.compress(canvas.toDataURL()));
+        //localStorage.setItem("sign-data", canvas.toDataURL());
+        sign_data = canvas.toDataURL();
+    }
 
     var lastX = null;
     var lastY = null;
@@ -60,11 +81,11 @@ function prepareSignCavas() {
     var mouseState = 0;
 
     function drawDate() {
-        if(!ctx){
+        if (!ctx) {
             return;
         }
         ctx.fillStyle = "rgb(255,255,255)";
-        ctx.fillRect(0,0, canvas.width, canvas.height);
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         ctx.font = "18px Arial";
         ctx.fillText(new Date().toLocaleDateString("de-DE"), canvas.width - 100, canvas.height - 28);
@@ -120,6 +141,7 @@ function prepareSignCavas() {
         if (confirm("Sind Sie sicher, dass Sie diese Unterschrift löschen möchten?")) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             drawDate();
+            localStorage.setItem("sign-data", '');
         }
     });
     $("#save-canvas").on("click", function saveCanvas(event) {

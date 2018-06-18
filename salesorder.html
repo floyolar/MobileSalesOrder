@@ -12,6 +12,7 @@
     <script src="node_modules/jquery/dist/jquery.min.js"></script>
     <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="node_modules/underscore/underscore-min.js"></script>
+    <script src="node_modules/lz-string/libs/lz-string.min.js"></script>
     <script src="js/helper.js"></script>
     <script src="js/view/salesorder.js"></script>
 </head>
@@ -77,9 +78,9 @@
         <td class="VisualOrder"></td>
         <td class="ItemCode"></td>
         <td class="ItemDescription"></td>
-        <td class="Quantity text-right"></td>
-        <td class="Price text-right number-format"></td>
-        <td class="LineTotal text-right number-format"></td>
+        <td class="Quantity"></td>
+        <td class="Price"></td>
+        <td class="LineTotal"></td>
         <td class="Currency"></td>
     </tr>
 </template>
@@ -91,7 +92,7 @@
         <td></td>
         <td></td>
         <th>Gesamt</th>
-        <th class="DocTotal text-right number-format"></th>
+        <th class="DocTotal"></th>
         <th class="DocCurrency"></th>
     </tr>
 </template>
