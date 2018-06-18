@@ -25,8 +25,9 @@ function fillData(target_selector, template_selector, data, callback, skip_clear
             if (!itm)
                 return;
             itm.textContent = value;
-            if(itm.classList.contains("number-format")){
-                itm.textContent = value.toLocaleString('de-DE', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            if(typeof value === 'number'){
+                if(itm.classList.contains("number-format")){
+                    itm.textContent = value.toLocaleString('de-DE', {minimumFractionDigits: 2, maximumFractionDigits: 2});
                 }
                 else{
                     itm.textContent = value.toLocaleString('de-DE');
