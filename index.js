@@ -148,7 +148,7 @@ function fillData(target_selector, template_selector, data) {
                 return;
             itm.textContent = value;
             if(typeof value === 'number'){
-                if(key === 'DocTotal'){
+                if(itm.classList.contains("decimal-two")){
                     itm.textContent = value.toLocaleString('de-DE', {minimumFractionDigits: 2, maximumFractionDigits: 2});
                 }
                 else{
