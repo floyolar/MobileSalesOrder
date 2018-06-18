@@ -26,8 +26,7 @@ function fillData(target_selector, template_selector, data, callback, skip_clear
                 return;
             itm.textContent = value;
             if(itm.classList.contains("number-format")){
-                (key === 'DocTotal'){
-                    itm.textContent = value.toLocaleString('de-DE', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+                itm.textContent = value.toLocaleString('de-DE', {minimumFractionDigits: 2, maximumFractionDigits: 2});
                 }
                 else{
                     itm.textContent = value.toLocaleString('de-DE');
