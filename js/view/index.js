@@ -1,5 +1,4 @@
 'use strict';
-const service = "";
 var lastClicked = '';
 var lastSortOrder = 'asc';
 var next_page_link = '';
@@ -19,7 +18,7 @@ function setLoadingState(newValue){
 }
 
 function autoLogin(error_callback, success_callback) {
-    const url = service + "/b1s/v1/Login";
+    const url = "/b1s/v1/Login";
     $.ajax({
         url: url,
         type: "POST",
@@ -36,25 +35,6 @@ function autoLogin(error_callback, success_callback) {
                 success_callback();
         }
     });
-}
-
-function remote(method, path, error, success) {
-    document.cookie = "B1SESSION=" + localStorage.getItem("session") + "; ROUTEID=.node0";
-    var req = new XMLHttpRequest();
-    req.open(method, service + path, true); // force XMLHttpRequest2
-    //req.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
-    req.setRequestHeader('Accept', 'application/json');
-    req.setRequestHeader('postman-token', localStorage.getItem("session"));
-    //req.withCredentials = true; // pass along cookies
-    req.onerror = error;
-    req.onreadystatechange = function () {
-        if (req.readyState === 4 && req.status === 200) {
-            var result = JSON.parse(req.responseText);
-            console.log(result);
-            success(result);
-        }
-    };
-    req.send();
 }
 
 function updateTable(additional_filters, requestUrl){
@@ -76,7 +56,7 @@ function updateTable(additional_filters, requestUrl){
             prev_page_link = requestUrl + additional_filters;
             next_page_link = result["odata.nextLink"];
 
-            fillData("#overview-body", '#sales-order-overview-row', result.value);
+            fillData("#overview-body", '#sales-order-overview-row', result.value, hookArrowEvents);
         });
 }
 
@@ -91,7 +71,9 @@ function hookPagingEvents() {
 
 function hookArrowEvents(){
     $("a.iag-arrow").on("click", function (event) {
-        $(event.target.parentNode.parentNode).filter()
+        var docEntry = $(event.target.parentNode.parentNode.parentNode.children).filter("td.DocEntry")[0].innerText;
+        console.log(docEntry);
+        window.location = "/salesorder.html?DocEntry=" + encodeURI(docEntry);
     });
 }
 
@@ -133,35 +115,4 @@ function onSortableHeaderClicked(x, callback){
     lastSortOrder = direction;
     lastClicked = x.target.dataset.header;
     callback("&$orderby=" + x.target.dataset.header + " " + direction)
-}
-
-function fillData(target_selector, template_selector, data) {
-    var target = document.querySelector(target_selector);
-    var rows = $(target_selector);
-    rows.empty();
-    var template = document.querySelector(template_selector);
-    for (var i = 0; i < data.length; i++) {
-        var clone = document.importNode(template.content, true);
-        _.each(data[i], function (value, key, obj) {
-            var itm = clone.querySelector('.' + key);
-            if (!itm)
-                return;
-            itm.textContent = value;
-            if(typeof value === 'number'){
-                if(itm.classList.contains("decimal-two")){
-                    itm.textContent = value.toLocaleString('de-DE', {minimumFractionDigits: 2, maximumFractionDigits: 2});
-                }
-                else{
-                    itm.textContent = value.toLocaleString('de-DE');
-                }
-
-            }
-            if(typeof value === 'string' && value.match(/^\d\d\d\d\-[0-1]\d\-\d\d$/gm)){
-                itm.textContent = value;// new Date(value).toLocaleDateString('de-DE');
-            }
-
-        });
-        target.appendChild(clone);
-    }
-
 }
