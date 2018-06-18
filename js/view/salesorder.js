@@ -24,10 +24,24 @@ $(document).ready(function () {
             is_signed = (documentData.U_ISSIGNED === 'Y');
             _resize();
         });
+    initialize();
     prepareSignCavas();
-
 });
+function initialize() {
+    $(".toggle-card-body").each(function (index, obj) {
+        $(obj).on("click", function (event) {
+            event.preventDefault();
+            window.setTimeout(_resize, 100);
+            var cbody = $(obj.parentNode.parentNode.childNodes).filter(".card-body");
+            if (cbody.css("display") === "none")
+                cbody.css("display", 'block');
+            else
+                cbody.css("display", 'none');
+        });
+        $(obj.parentNode.parentNode.childNodes).filter(".card-body").css("display", 'none');
+    });
 
+}
 function prepareSignCavas() {
 
     var canvas = document.getElementById('sign-canvas');
@@ -36,18 +50,21 @@ function prepareSignCavas() {
         var ctx = canvas.getContext('2d');
     var img = new Image;
     img.onload = function () {
-        ctx.drawImage(img, 0, 0); // Or at whatever offset you like
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height); // Or at whatever offset you like
     };
 
     function resizeCanvas() {
         var offset = getOffset(canvas);
-        canvas.width = window.innerWidth - offset.left * 2;
+        canvas.width = $(".card-body").innerWidth() - 40;//window.innerWidth - offset.left * 2;
         canvas.height = canvas.width * 9 / 16;
         var prev_data = sign_data;//localStorage.getItem('sign-data');
         if (prev_data && prev_data !== "") {
             img.src = prev_data;
         }
         drawDate();
+
+        $(".canvas-controls").css("display", is_signed ? "none" : "inline-flex")
+
     }
 
     resizeCanvas();
@@ -93,13 +110,15 @@ function prepareSignCavas() {
         ctx.fillStyle = "rgb(0,0,0)";
         ctx.font = "18px Arial";
         ctx.fillText(new Date().toLocaleDateString("de-DE"), canvas.width - 100, canvas.height - 28);
-        //ctx.fillText("test", canvas.width - 100, canvas.height - 28);
+
         ctx.fillStyle = "rgb(255,255,255)";
 
     }
 
     function draw(event) {
         event.preventDefault();
+        if (is_signed)
+            return;
         var offset = getOffset(canvas);
         var x = null;
         var y = null;
@@ -206,11 +225,13 @@ function setLoadingState(newValue) {
         $(".loader").show();
         $(".document-head").hide();
         $(".document-lines").hide();
+        $(".sign").hide();
         // $(".paging").hide();
     } else {
         $(".loader").hide();
         $(".document-head").show();
         $(".document-lines").show();
+        $(".sign").show();
         // $(".paging").show();
 
     }
