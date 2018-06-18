@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MobileSalesOrder</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="node_modules/bootswatch/dist/flatly/bootstrap.min.css">
+    <link rel="stylesheet" href="css/helper.css">
+    <link rel="stylesheet" href="css/custom.css">
+    <link rel="stylesheet" href="/node_modules/font-awesome/css/font-awesome.min.css">
+    <script src="node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="node_modules/underscore/underscore-min.js"></script>
+    <script src="js/helper.js"></script>
+    <script src="js/view/salesorder.js"></script>
+</head>
+<body class="bg-light">
+<div class="container">
+    <h1>Kundenauftrag</h1>
+    <div class="loader">
+        <i class="fa fa-spin fa-cog"></i>
+    </div>
+    <div class="document-head">
+        <div class="row">
+            <div class="col-lg-3 col-form-label">Auftragsnummer</div>
+            <div class="col-lg-3"><input data-field="DocNum" class="form-control iag-form-data" type="text" readonly value="1234"></div>
+
+            <div class="col-lg-3 col-form-label">Kundennr.</div>
+            <div class="col-lg-3"><input data-field="CardCode" class="form-control iag-form-data" type="text" readonly value="1234"></div>
+
+            <div class="col-lg-3 col-form-label">Kunde</div>
+            <div class="col-lg-3"><input data-field="CardName" class="form-control iag-form-data" type="text" readonly value="abc"></div>
+
+            <div class="col-lg-3 col-form-label">Auftragsdatum</div>
+            <div class="col-lg-3"><input data-field="DocDate" class="form-control iag-form-data" type="text" readonly value="123"></div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
