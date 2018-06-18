@@ -5,13 +5,14 @@
     <title>MobileSalesOrder</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="node_modules/bootswatch/dist/flatly/bootstrap.min.css">
-    <link rel="stylesheet" href="helper.css">
-    <link rel="stylesheet" href="custom.css">
+    <link rel="stylesheet" href="css/helper.css">
+    <link rel="stylesheet" href="css/custom.css">
     <link rel="stylesheet" href="/node_modules/font-awesome/css/font-awesome.min.css">
     <script src="node_modules/jquery/dist/jquery.min.js"></script>
     <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="node_modules/underscore/underscore-min.js"></script>
-    <script src="index.js"></script>
+    <script src="js/helper.js"></script>
+    <script src="js/view/index.js"></script>
 </head>
 <body class="bg-light">
 <div class="container">
@@ -58,8 +59,8 @@
         <td class="CardCode"></td>
         <td class="CardName"></td>
         <td class="DocDate"></td>
-        <td class="DocTotal text-right"></td>
-        <td class="DocCurrency" />
+        <td class="DocTotal text-right number-format"></td>
+        <td class="DocCurrency"></td>
     </tr>
 </template>
 </html>
