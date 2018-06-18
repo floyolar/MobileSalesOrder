@@ -26,11 +26,11 @@ function fillData(target_selector, template_selector, data, callback, skip_clear
                 return;
             itm.textContent = value;
             if(typeof value === 'number'){
-                if(key === 'DocTotal'){
+                if(itm.classList.contains("number-format")){
                     itm.textContent = value.toLocaleString('de-DE', {minimumFractionDigits: 2, maximumFractionDigits: 2});
                 }
                 else{
-                    //itm.textContent = value.toLocaleString('de-DE');
+                    itm.textContent = value.toLocaleString('de-DE');
                 }
 
             }
