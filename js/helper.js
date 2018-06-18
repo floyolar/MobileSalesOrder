@@ -30,7 +30,7 @@ function fillData(target_selector, template_selector, data, callback, skip_clear
                     itm.textContent = value.toLocaleString('de-DE', {minimumFractionDigits: 2, maximumFractionDigits: 2});
                 }
                 else{
-                    itm.textContent = value.toLocaleString('de-DE');
+                    //itm.textContent = value.toLocaleString('de-DE');
                 }
 
             }
@@ -46,21 +46,28 @@ function fillData(target_selector, template_selector, data, callback, skip_clear
 
 }
 
-function remote(method, path, error, success) {
+function remote(method, path, error, success, data) {
     document.cookie = "B1SESSION=" + localStorage.getItem("session") + "; ROUTEID=.node0";
     var req = new XMLHttpRequest();
     req.open(method, path, true); // force XMLHttpRequest2
     //req.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
+
     req.setRequestHeader('Accept', 'application/json');
+    if(data)
+        req.setRequestHeader("Content-Type", "application/json");
+
     req.setRequestHeader('postman-token', localStorage.getItem("session"));
     //req.withCredentials = true; // pass along cookies
     req.onerror = error;
     req.onreadystatechange = function () {
-        if (req.readyState === 4 && req.status === 200) {
+        if (req.readyState === 4 && (req.status === 200)) {
             var result = JSON.parse(req.responseText);
             console.log(result);
             success(result);
         }
+        if(req.status === 204){
+           success(null);
+        }
     };
-    req.send();
+    req.send(JSON.stringify(data));
 }

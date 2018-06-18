@@ -43,7 +43,7 @@ function updateTable(additional_filters, requestUrl){
     if(!additional_filters)
         additional_filters = '';
     if(!requestUrl)
-        requestUrl = "/b1s/v1/Orders?$filter=DocumentStatus eq 'bost_Open'&$select=DocEntry,DocNum,DocDate,CardCode,CardName,DocTotal,DocCurrency";
+        requestUrl = "/b1s/v1/Orders?$filter=DocumentStatus eq 'bost_Open'&$select=DocEntry,DocNum,DocDate,CardCode,CardName,DocTotal,DocCurrency,U_ISSIGNED";
 
     remote("GET", requestUrl + additional_filters,
         function onError(e) {

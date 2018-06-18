@@ -1,5 +1,7 @@
 var documentData = null;
 var sign_data = '';
+var is_signed = false;
+var _resize = null;
 $(document).ready(function () {
     var urlParams = new URLSearchParams(window.location.search);
     if (!urlParams.has("DocEntry")) {
@@ -18,6 +20,9 @@ $(document).ready(function () {
             documentData = jsonResult;
             refreshDocument(documentData);
             $("#export-canvas").prop("download", "Unterschrift_Angebot_" + documentData.DocNum + "_" + documentData.CardName + "_" + new Date().toLocaleDateString("de-DE") + ".jpg");
+            sign_data = documentData.U_SIGN;
+            is_signed = (documentData.U_ISSIGNED === 'Y');
+            _resize();
         });
     prepareSignCavas();
 
@@ -30,8 +35,8 @@ function prepareSignCavas() {
     if (canvas.getContext)
         var ctx = canvas.getContext('2d');
     var img = new Image;
-    img.onload = function(){
-        ctx.drawImage(img,0,0); // Or at whatever offset you like
+    img.onload = function () {
+        ctx.drawImage(img, 0, 0); // Or at whatever offset you like
     };
 
     function resizeCanvas() {
@@ -39,18 +44,17 @@ function prepareSignCavas() {
         canvas.width = window.innerWidth - offset.left * 2;
         canvas.height = canvas.width * 9 / 16;
         var prev_data = sign_data;//localStorage.getItem('sign-data');
-        if(prev_data && prev_data !== ""){
+        if (prev_data && prev_data !== "") {
             img.src = prev_data;
         }
         drawDate();
     }
 
     resizeCanvas();
-
+    _resize = resizeCanvas;
     window.addEventListener("resize", function onResize() {
         resizeCanvas();
     });
-
 
 
     drawDate();
@@ -86,9 +90,12 @@ function prepareSignCavas() {
         }
         ctx.fillStyle = "rgb(255,255,255)";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-
+        ctx.fillStyle = "rgb(0,0,0)";
         ctx.font = "18px Arial";
         ctx.fillText(new Date().toLocaleDateString("de-DE"), canvas.width - 100, canvas.height - 28);
+        //ctx.fillText("test", canvas.width - 100, canvas.height - 28);
+        ctx.fillStyle = "rgb(255,255,255)";
+
     }
 
     function draw(event) {
@@ -147,7 +154,15 @@ function prepareSignCavas() {
     $("#save-canvas").on("click", function saveCanvas(event) {
         event.preventDefault();
         var jpegData = canvas.toDataURL('image/jpeg');
+        remote("PATCH", "/b1s/v1/Orders(" + documentData.DocEntry + ")", function onError() {
 
+            },
+            function onSuccess(result) {
+
+            }, {
+                U_SIGN: jpegData,
+                U_ISSIGNED: "Y"
+            });
     });
 
     $("#export-canvas").on("click", function exportAsJpeg(event) {
