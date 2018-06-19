@@ -1,9 +1,14 @@
+var config = null;
 var documentData = null;
 var sign_data = '';
 var is_signed = false;
 var _resize = null;
 var currencies = [];
+var lastLineObject = null;
 function prepareForAdding() {
+    documentData = {
+        DocumentLines: []
+    };
     $(".loader").hide();
     $("input.form-control[readonly]").prop("readonly", null);
     $("input[data-field='DocNum']").prop("readonly", "readonly");
@@ -26,9 +31,7 @@ function prepareForAdding() {
     $("select#selector_cardname").on("changed.bs.select", function (event) {
         var cardCode = $("select#selector_cardname").val();
         $("input[data-field='CardCode']").val(cardCode.toString());
-        documentData = {
-            CardCode: cardCode
-        }
+        documentData.CardCode = cardCode;
 
     });
 
@@ -60,9 +63,13 @@ function prepareForAdding() {
     getCurrencies(function (c) {
         currencies = c;
     });
+
+
 }
 
 function addRow() {
+    console.log(documentData);
+    documentData.DocumentLines.push({});
     var template = document.querySelector("#sales-order-newline-template");
     var target = document.querySelector("#document-lines-content");
     var clone = document.importNode(template.content, true);
@@ -72,7 +79,9 @@ function addRow() {
             text: currencies[i]
         }));
     }
-    var dp_raw =clone.querySelector(".line-item");
+    clone.querySelector("tr").dataset.index = documentData.DocumentLines.length - 1;
+
+    var dp_raw = clone.querySelector(".line-item");
     var dp = $(dp_raw);
     //$(clone.querySelector(".line-item"))
     dp.selectpicker({});
@@ -80,7 +89,7 @@ function addRow() {
         //modal shown
         var textbox = $($(dp.parent().children().filter("div.dropdown-menu.show")[0].childNodes).filter("div.bs-searchbox")[0].childNodes[0]);
         textbox.on("keyup", function (e) {
-            remote("GET", "/b1s/v1/Items?$select=ItemCode,ItemName&$filter=contains(ItemName, '" + encodeURI(e.target.value) + "')", function onError() {
+            remote("GET", "/b1s/v1/Items?$select=ItemCode,ItemName,ItemPrices&$filter=contains(ItemName, '" + encodeURI(e.target.value) + "')", function onError() {
 
                 },
                 function onSuccess(jsonResult) {
@@ -90,6 +99,14 @@ function addRow() {
                         dp.selectpicker('refresh');
                     }, false, function setValue(itm, value, obj) {
                         itm.value = obj.ItemCode;
+                        var p = getListPrice(obj, config.salesorder.defaut_pricelist_id);
+                        if (!p || !p.Price) {
+                            p = 0;
+                        }
+                        else {
+                            p = p.Price.toString();
+                        }
+                        itm.dataset.price = p;
                         return itm;
                     });
                 });
@@ -99,15 +116,67 @@ function addRow() {
 
     dp.on("hide.bs.select", function (event) {
         var itemCode = dp.val();
-        $($(event.target.parentNode.parentNode.parentNode)[0].childNodes).filter("td.ItemCode").text(itemCode)
+        if (!itemCode)
+            return;
+        $($(event.target.parentNode.parentNode.parentNode)[0].childNodes).filter("td.ItemCode").text(itemCode);
+        var dataset = $($(event.target.parentNode).children().filter("select")[0].options).filter("[value='" + itemCode + "']")[0].dataset;
+        $($(event.target.parentNode.parentNode.parentNode)[0].childNodes).filter("td.Price").children().filter("input")
+            .val(dataset.price);
+
+        documentData.DocumentLines[event.target.parentNode.parentNode.parentNode.dataset.index] = {
+            ItemCode: itemCode,
+            Price: parseFloat(dataset.price),
+            Quantity: 1
+        };
+        calculateNewTotalPrice(event.target.parentNode.parentNode.parentNode.dataset.index);
 
 
     });
 
-    target.appendChild(clone);
+    var qty = $(clone.querySelector("tr > .Quantity > input"));
+    qty.on("keypress", onQuantityChanged);
+    qty.on("click", onQuantityChanged);
+    qty.on("change", onQuantityChanged);
+    function onQuantityChanged(e) {
+        console.log("quantity_changed: " + e.target.value);
+        calculateNewTotalPrice(parseInt(e.target.parentNode.parentNode.parentNode.dataset.index));
+    }
+
+
+    var price = $(clone.querySelector("tr > .Price > input"));
+
+    price.on("keypress", onPriceChanged);
+    price.on("click", onPriceChanged);
+    price.on("change", onPriceChanged);
+
+    function onPriceChanged(e) {
+        console.log("price_changed: " + e.target.value);
+        calculateNewTotalPrice(parseInt(e.target.parentNode.parentNode.parentNode.dataset.index));
+    }
+
+    var lt = $(clone.querySelector("tr > .LineTotal"));
+
+    function calculateNewTotalPrice(index) {
+        lt.text(formattedFloat(parseFloat(price.val()) * parseFloat(qty.val())));
+
+
+        documentData.DocumentLines[index].Quantity = parseFloat(qty.val());
+        documentData.DocumentLines[index].Price = parseFloat(price.val());
+
+
+    }
+
+    var c = target.appendChild(clone);
+
 }
 
 $(document).ready(function () {
+    $.ajax({
+        url: "/config.json",
+        success: function (result) {
+            config = result;
+        }
+    });
     if (window.location.hash) {
         var hash = window.location.hash.substring(1);
         if (hash === "new") {
@@ -161,6 +230,14 @@ function initialize() {
                 cbody.css("display", 'none');
         });
         $(obj.parentNode.parentNode.childNodes).filter(".card-body").css("display", 'none');
+    });
+    $("#add").on("click", function (e) {
+        e.preventDefault();
+        console.log(documentData);
+        remote("POST", "/b1s/v1/Orders", function onError() {
+        }, function onSuccess(jsonResult) {
+
+        }, documentData);
     });
 
 }

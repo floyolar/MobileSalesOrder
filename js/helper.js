@@ -13,16 +13,16 @@ function getOffset(obj) {
 }
 
 
-function getCurrencies(callback){
-    remote("GET","/b1s/v1/Currencies?$select=Code",function onError(){
+function getCurrencies(callback) {
+    remote("GET", "/b1s/v1/Currencies?$select=Code", function onError() {
 
         },
-        function onSuccess(jsonResult){
+        function onSuccess(jsonResult) {
             var arr = [];
-            for(var i = 0; i < jsonResult.value.length; i++){
+            for (var i = 0; i < jsonResult.value.length; i++) {
                 arr.push(jsonResult.value[i].Code);
             }
-            if(arr.indexOf("EUR") > 0){
+            if (arr.indexOf("EUR") > 0) {
                 var x = arr.indexOf("EUR");
                 var y = 0;
                 var b = arr[y];
@@ -33,21 +33,30 @@ function getCurrencies(callback){
         });
 }
 
-function formattedDate(date){
-    if(!date)
+function formattedDate(date) {
+    if (!date)
         date = new Date();
 
     var year = date.getFullYear();
 
     var month = date.getMonth() + 1;
-    if(month <= 9)
-        month = '0'+month;
+    if (month <= 9)
+        month = '0' + month;
 
-    var day= date.getDate();
-    if(day <= 9)
-        day = '0'+day;
+    var day = date.getDate();
+    if (day <= 9)
+        day = '0' + day;
 
-    return day + "." + month + '.'+ year;
+    return day + "." + month + '.' + year;
+}
+
+function getListPrice(itemObject, pricelist_id) {
+    var prices = itemObject.ItemPrices;
+    for (var i = 0; i < prices.length; i++) {
+        if(prices[i].PriceList.toString() === pricelist_id.toString()){
+            return prices[i];
+        }
+    }
 }
 
 function fillData(target_selector, template_selector, data, callback, skip_clear_items, override_setValue) {
@@ -55,10 +64,10 @@ function fillData(target_selector, template_selector, data, callback, skip_clear
     var target;
 
 
-    if(typeof target_selector !== "string"){
+    if (typeof target_selector !== "string") {
         target = target_selector;
     }
-    else{
+    else {
         target = document.querySelector(target_selector);
     }
 
@@ -77,10 +86,7 @@ function fillData(target_selector, template_selector, data, callback, skip_clear
             itm.textContent = value;
             if (typeof value === 'number') {
                 if (itm.classList.contains("number-format")) {
-                    itm.textContent = value.toLocaleString('de-DE', {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2
-                    });
+                    itm.textContent = formattedFloat(value);
                 }
                 else {
                     //itm.textContent = value.toLocaleString('de-DE');
@@ -92,7 +98,7 @@ function fillData(target_selector, template_selector, data, callback, skip_clear
             }
             // if(setValue)
             //     itm.value = value;
-            if(override_setValue)
+            if (override_setValue)
                 itm = override_setValue(itm, value, obj);
 
         });
@@ -129,4 +135,10 @@ function remote(method, path, error, success, data) {
         }
     };
     req.send(JSON.stringify(data));
+}
+function formattedFloat(value) {
+    return value.toLocaleString('de-DE', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
 }

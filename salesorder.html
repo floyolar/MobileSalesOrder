@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>MobileSalesOrder</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="node_modules/bootswatch/dist/flatly/bootstrap.min.css">
+    <link rel="stylesheet" href="node_modules/bootswatch/dist/yeti/bootstrap.min.css">
     <link rel="stylesheet" href="css/helper.css">
     <link rel="stylesheet" href="css/custom.css">
     <link rel="stylesheet" href="css/salesorder.css">
@@ -77,10 +77,12 @@
             <tbody id="document-lines-content">
 
             </tbody>
+
         </table>
+
     </div>
     <div class="sign card mb-3">
-        <div class="card-header">Unterschrift <a href="#" class="pull-right toggle-card-body"><i
+        <div class="card-header"><i class="fa fa-pencil"></i> Unterschrift <a href="#" class="pull-right toggle-card-body"><i
                 class="fa fa-window-maximize"></i></a></div>
 
         <div class="card-body">
@@ -88,11 +90,14 @@
 
             <canvas id="sign-canvas"></canvas>
             <div class="btn-group canvas-controls" role="group">
-                <a href="#" class="btn btn-warning" id="reset-canvas">Zurücksetzten</a>
-                <a class="btn btn-info" id="export-canvas"><i class="fa fa-save"></i> als JPG speichern</a>
-                <a href="#" class="btn btn-secondary" id="save-canvas">Speichern</a>
+                <a href="#" class="btn btn-light" id="reset-canvas"><i class="fa fa-times"></i> Zurücksetzten</a>
+                <a class="btn btn-light" id="export-canvas"><i class="fa fa-download"></i> als JPG exportieren</a>
+                <a href="#" class="btn btn-primary" id="save-canvas"><i class="fa fa-save"></i> Speichern</a>
             </div>
         </div>
+    </div>
+    <div class="add">
+        <a href="#" class="btn btn-primary btn-block" id="add"><i class="fa fa-plus"></i> Hinzufügen</a>
     </div>
 </div>
 </body>
@@ -118,14 +123,19 @@
             </select>
         </td>
         <td class="Quantity">
-            <input type="number" min="0" class="form-control text-right" style="max-width: 100px;">
+            <input type="number" min="0" value="1" class="form-control text-right" style="min-width: 80px;">
         </td>
-        <td class="Price text-right number-format"></td>
+        <td class="Price" style="min-width: 80px;">
+            <input type="number" class="form-control text-right price" min="0" step=.01>
+        </td>
         <td class="LineTotal text-right number-format"></td>
         <td class="Currency">
             <select class="line-currency form-control">
 
             </select>
+        </td>
+        <td class="pull-right">
+            <a href="#" class="remove-line"><i class="fa fa-times btn-light btn"></i></a>
         </td>
     </tr>
 </template>
