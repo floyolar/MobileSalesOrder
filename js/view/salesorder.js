@@ -2,7 +2,73 @@ var documentData = null;
 var sign_data = '';
 var is_signed = false;
 var _resize = null;
+
+function prepareForAdding() {
+    $(".loader").hide();
+    $("input.form-control[readonly]").prop("readonly", null);
+    $("input[data-field='DocNum']").prop("readonly", "readonly");
+    $("input[data-field='CardCode']").prop("readonly", "readonly");
+    $("input[data-field='DocumentStatus']").prop("readonly", "readonly");
+    $("input[data-field='CardName']").hide();
+    $("select#selector_cardname").show();
+    $("select#selector_cardname").selectpicker({});
+    if( /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) ) {
+        $('.selectpicker').selectpicker('mobile');
+    }
+
+    $("select#selector_cardname").on("changed.bs.select", function (event) {
+        var cardCode = $("select#selector_cardname").val();
+        $("input[data-field='CardCode']").val(cardCode.toString());
+        documentData = {
+            CardCode: cardCode
+        }
+
+    });
+
+    $("select#selector_cardname").on("shown.bs.select", function () {
+        //modal shown
+        $("div.bs-searchbox > input").on("keyup", function (e) {
+            console.log(e.target.value);
+            remote("GET", "/b1s/v1/BusinessPartners?$select=CardCode,CardName&$filter=contains(CardName, '" + e.target.value + "')", function onError() {
+
+                },
+                function onSuccess(jsonResult) {
+                    if (!jsonResult || !jsonResult.value)
+                        return;
+                    fillData("#selector_cardname", "#select_bp", jsonResult.value, function () {
+                        $("select#selector_cardname").selectpicker('refresh');
+                    }, false, function setValue(itm, value, obj) {
+                        //itm.dataset.CardCode = obj.CardCode;
+                        itm.value = obj.CardCode;
+                        return itm;
+                    });
+                });
+        });
+
+    });
+    //
+    $("input[data-field='DocDate']").val(formattedDate());
+
+}
+
 $(document).ready(function () {
+    if (window.location.hash) {
+        var hash = window.location.hash.substring(1);
+        if (hash === "new") {
+            //Neuen Auftrag vorbereiten
+            prepareForAdding();
+
+            initialize();
+            prepareSignCavas();
+            return;
+        }
+        else {
+            alert("Fehler! Keine Parameter!");
+            window.history.back();
+            return;
+        }
+    }
+
     var urlParams = new URLSearchParams(window.location.search);
     if (!urlParams.has("DocEntry")) {
         alert("Fehler! Keine Parameter!");
@@ -50,14 +116,14 @@ function prepareSignCavas() {
         var ctx = canvas.getContext('2d');
     var img = new Image;
     img.onload = function () {
-        ctx.drawImage(img, 0, 0, canvas.width, canvas.height); // Or at whatever offset you like
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
     };
 
     function resizeCanvas() {
         var offset = getOffset(canvas);
-        canvas.width = $(".card-body").innerWidth() - 40;//window.innerWidth - offset.left * 2;
+        canvas.width = $(".card-body").innerWidth() - 40;
         canvas.height = canvas.width * 9 / 16;
-        var prev_data = sign_data;//localStorage.getItem('sign-data');
+        var prev_data = sign_data;
         if (prev_data && prev_data !== "") {
             img.src = prev_data;
         }
@@ -177,7 +243,9 @@ function prepareSignCavas() {
 
             },
             function onSuccess(result) {
-
+                console.log("Gespeichert!");
+                is_signed = true;
+                resizeCanvas();
             }, {
                 U_SIGN: jpegData,
                 U_ISSIGNED: "Y"

@@ -12,7 +12,24 @@ function getOffset(obj) {
     return {left: offsetLeft, top: offsetTop};
 }
 
-function fillData(target_selector, template_selector, data, callback, skip_clear_items) {
+function formattedDate(date){
+    if(!date)
+        date = new Date();
+
+    var year = date.getFullYear();
+
+    var month = date.getMonth() + 1;
+    if(month <= 9)
+        month = '0'+month;
+
+    var day= date.getDate();
+    if(day <= 9)
+        day = '0'+day;
+
+    return day + "." + month + '.'+ year;
+}
+
+function fillData(target_selector, template_selector, data, callback, skip_clear_items, override_setValue) {
     var target = document.querySelector(target_selector);
     var rows = $(target_selector);
     if (!skip_clear_items)
@@ -24,6 +41,7 @@ function fillData(target_selector, template_selector, data, callback, skip_clear
             var itm = clone.querySelector('.' + key);
             if (!itm)
                 return;
+
             itm.textContent = value;
             if (typeof value === 'number') {
                 if (itm.classList.contains("number-format")) {
@@ -40,6 +58,10 @@ function fillData(target_selector, template_selector, data, callback, skip_clear
             if (typeof value === 'string' && value.match(/^\d\d\d\d\-[0-1]\d\-\d\d$/gm)) {
                 itm.textContent = value;// new Date(value).toLocaleDateString('de-DE');
             }
+            // if(setValue)
+            //     itm.value = value;
+            if(override_setValue)
+                itm = override_setValue(itm, value, obj)
 
         });
         target.appendChild(clone);
@@ -48,7 +70,6 @@ function fillData(target_selector, template_selector, data, callback, skip_clear
         callback();
 
 }
-
 
 
 function remote(method, path, error, success, data) {

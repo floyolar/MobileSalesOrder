@@ -9,38 +9,49 @@
     <link rel="stylesheet" href="css/custom.css">
     <link rel="stylesheet" href="css/salesorder.css">
     <link rel="stylesheet" href="/node_modules/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="node_modules/bootstrap-select/dist/css/bootstrap-select.min.css">
     <script src="node_modules/jquery/dist/jquery.min.js"></script>
     <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="node_modules/underscore/underscore-min.js"></script>
     <script src="js/helper.js"></script>
     <script src="js/view/salesorder.js"></script>
+    <script src="node_modules/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
 </head>
 <body class="bg-light">
 <div class="container">
-    <h1>Kundenauftrag</h1>
+
+    <h1><a href="/index.html"><i class="fa fa-arrow-left"></i></a> Kundenauftrag</h1>
     <div class="loader">
         <i class="fa fa-spin fa-cog"></i>
     </div>
     <div class="document-head">
         <div class="row">
-            <div class="col-lg-3 col-form-label">Auftragsnummer</div>
-            <div class="col-lg-3"><input data-field="DocNum" class="form-control iag-form-data" type="text" readonly
+            <div class="col-lg-3 col-form-label extra-margin-bottom">Auftragsnummer</div>
+            <div class="col-lg-3 extra-margin-bottom"><input data-field="DocNum" class="form-control iag-form-data" type="text" readonly
                                          value=""></div>
 
-            <div class="col-lg-3 col-form-label">Kundennr.</div>
-            <div class="col-lg-3"><input data-field="CardCode" class="form-control iag-form-data" type="text" readonly
+            <div class="col-lg-3 col-form-label extra-margin-bottom">Kundennr.</div>
+            <div class="col-lg-3  extra-margin-bottom"><input data-field="CardCode" class="form-control iag-form-data" type="text" readonly
                                          value=""></div>
 
-            <div class="col-lg-3 col-form-label">Kunde</div>
-            <div class="col-lg-3"><input data-field="CardName" class="form-control iag-form-data" type="text" readonly
+            <div class="col-lg-3 col-form-label extra-margin-bottom">Kunde</div>
+            <div class="col-lg-3  extra-margin-bottom">
+
+                <input data-field="CardName" class="form-control iag-form-data" type="text" readonly
+                                         value="">
+
+                <select name="CardName" id="selector_cardname" class="form-control" style="display: none;" data-live-search="true">
+
+                </select>
+
+            </div>
+
+            <div class="col-lg-3 col-form-label extra-margin-bottom">Auftragsdatum</div>
+            <div class="col-lg-3 extra-margin-bottom"><input data-field="DocDate" class="form-control iag-form-data" type="text" readonly
                                          value=""></div>
 
-            <div class="col-lg-3 col-form-label">Auftragsdatum</div>
-            <div class="col-lg-3"><input data-field="DocDate" class="form-control iag-form-data" type="text" readonly
-                                         value=""></div>
-
-            <div class="col-lg-3 col-form-label">Status</div>
-            <div class="col-lg-3"><input data-field="DocumentStatus" class="form-control iag-form-data" type="text"
+            <div class="col-lg-3 col-form-label extra-margin-bottom">Status</div>
+            <div class="col-lg-3 extra-margin-bottom"><input data-field="DocumentStatus" class="form-control iag-form-data" type="text"
                                          readonly value=""></div>
         </div>
     </div>
@@ -103,5 +114,8 @@
         <th class="DocTotal text-right number-format"></th>
         <th class="DocCurrency"></th>
     </tr>
+</template>
+<template id="select_bp">
+    <option value="" data-type="innerHtml,value" class="CardName"></option>
 </template>
 </html>
