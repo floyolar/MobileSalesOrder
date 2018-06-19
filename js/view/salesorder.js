@@ -2,7 +2,7 @@ var documentData = null;
 var sign_data = '';
 var is_signed = false;
 var _resize = null;
-
+var currencies = [];
 function prepareForAdding() {
     $(".loader").hide();
     $("input.form-control[readonly]").prop("readonly", null);
@@ -12,7 +12,14 @@ function prepareForAdding() {
     $("input[data-field='CardName']").hide();
     $("select#selector_cardname").show();
     $("select#selector_cardname").selectpicker({});
-    if( /Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent) ) {
+
+    $("#addrow").show();
+    $("#addrow").on("click", function (event) {
+        event.preventDefault();
+        addRow();
+    });
+
+    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent)) {
         $('.selectpicker').selectpicker('mobile');
     }
 
@@ -27,7 +34,8 @@ function prepareForAdding() {
 
     $("select#selector_cardname").on("shown.bs.select", function () {
         //modal shown
-        $("div.bs-searchbox > input").on("keyup", function (e) {
+        var textbox = $($($("select#selector_cardname").parent().children().filter("div.dropdown-menu.show")[0].childNodes).filter("div.bs-searchbox")[0].childNodes[0]);
+        textbox.on("keyup", function (e) {
             console.log(e.target.value);
             remote("GET", "/b1s/v1/BusinessPartners?$select=CardCode,CardName&$filter=contains(CardName, '" + e.target.value + "')", function onError() {
 
@@ -49,6 +57,54 @@ function prepareForAdding() {
     //
     $("input[data-field='DocDate']").val(formattedDate());
 
+    getCurrencies(function (c) {
+        currencies = c;
+    });
+}
+
+function addRow() {
+    var template = document.querySelector("#sales-order-newline-template");
+    var target = document.querySelector("#document-lines-content");
+    var clone = document.importNode(template.content, true);
+    for (var i = 0; i < currencies.length; i++) {
+        $(clone.querySelector(".line-currency")).append($('<option>', {
+            value: currencies[i],
+            text: currencies[i]
+        }));
+    }
+    var dp_raw =clone.querySelector(".line-item");
+    var dp = $(dp_raw);
+    //$(clone.querySelector(".line-item"))
+    dp.selectpicker({});
+    dp.on("shown.bs.select", function () {
+        //modal shown
+        var textbox = $($(dp.parent().children().filter("div.dropdown-menu.show")[0].childNodes).filter("div.bs-searchbox")[0].childNodes[0]);
+        textbox.on("keyup", function (e) {
+            remote("GET", "/b1s/v1/Items?$select=ItemCode,ItemName&$filter=contains(ItemName, '" + encodeURI(e.target.value) + "')", function onError() {
+
+                },
+                function onSuccess(jsonResult) {
+                    if (!jsonResult || !jsonResult.value)
+                        return;
+                    fillData(dp_raw, "#select_item", jsonResult.value, function () {
+                        dp.selectpicker('refresh');
+                    }, false, function setValue(itm, value, obj) {
+                        itm.value = obj.ItemCode;
+                        return itm;
+                    });
+                });
+        });
+
+    });
+
+    dp.on("hide.bs.select", function (event) {
+        var itemCode = dp.val();
+        $($(event.target.parentNode.parentNode.parentNode)[0].childNodes).filter("td.ItemCode").text(itemCode)
+
+
+    });
+
+    target.appendChild(clone);
 }
 
 $(document).ready(function () {
@@ -175,7 +231,7 @@ function prepareSignCavas() {
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         ctx.fillStyle = "rgb(0,0,0)";
         ctx.font = "18px Arial";
-        ctx.fillText(new Date().toLocaleDateString("de-DE"), canvas.width - 100, canvas.height - 28);
+        ctx.fillText(formattedDate(), canvas.width - 100, canvas.height - 28);
 
         ctx.fillStyle = "rgb(255,255,255)";
 

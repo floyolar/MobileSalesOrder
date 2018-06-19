@@ -11,3 +11,9 @@ canvas#sign-canvas{
     background: #fff;
     border: 2px solid #dee2e6;
 }
+th.ItemDescription{
+    width: 250px;
+}
+td.ItemDescription{
+    width: 250px;
+}

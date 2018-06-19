@@ -12,6 +12,27 @@ function getOffset(obj) {
     return {left: offsetLeft, top: offsetTop};
 }
 
+
+function getCurrencies(callback){
+    remote("GET","/b1s/v1/Currencies?$select=Code",function onError(){
+
+        },
+        function onSuccess(jsonResult){
+            var arr = [];
+            for(var i = 0; i < jsonResult.value.length; i++){
+                arr.push(jsonResult.value[i].Code);
+            }
+            if(arr.indexOf("EUR") > 0){
+                var x = arr.indexOf("EUR");
+                var y = 0;
+                var b = arr[y];
+                arr[y] = arr[x];
+                arr[x] = b;
+            }
+            callback(arr);
+        });
+}
+
 function formattedDate(date){
     if(!date)
         date = new Date();
@@ -30,11 +51,22 @@ function formattedDate(date){
 }
 
 function fillData(target_selector, template_selector, data, callback, skip_clear_items, override_setValue) {
-    var target = document.querySelector(target_selector);
+
+    var target;
+
+
+    if(typeof target_selector !== "string"){
+        target = target_selector;
+    }
+    else{
+        target = document.querySelector(target_selector);
+    }
+
     var rows = $(target_selector);
     if (!skip_clear_items)
         rows.empty();
     var template = document.querySelector(template_selector);
+
     for (var i = 0; i < data.length; i++) {
         var clone = document.importNode(template.content, true);
         _.each(data[i], function (value, key, obj) {
@@ -61,10 +93,11 @@ function fillData(target_selector, template_selector, data, callback, skip_clear
             // if(setValue)
             //     itm.value = value;
             if(override_setValue)
-                itm = override_setValue(itm, value, obj)
+                itm = override_setValue(itm, value, obj);
 
         });
         target.appendChild(clone);
+
     }
     if (callback)
         callback();

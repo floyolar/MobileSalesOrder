@@ -27,45 +27,51 @@
     <div class="document-head">
         <div class="row">
             <div class="col-lg-3 col-form-label extra-margin-bottom">Auftragsnummer</div>
-            <div class="col-lg-3 extra-margin-bottom"><input data-field="DocNum" class="form-control iag-form-data" type="text" readonly
-                                         value=""></div>
+            <div class="col-lg-3 extra-margin-bottom"><input data-field="DocNum" class="form-control iag-form-data"
+                                                             type="text" readonly
+                                                             value=""></div>
 
             <div class="col-lg-3 col-form-label extra-margin-bottom">Kundennr.</div>
-            <div class="col-lg-3  extra-margin-bottom"><input data-field="CardCode" class="form-control iag-form-data" type="text" readonly
-                                         value=""></div>
+            <div class="col-lg-3  extra-margin-bottom"><input data-field="CardCode" class="form-control iag-form-data"
+                                                              type="text" readonly
+                                                              value=""></div>
 
             <div class="col-lg-3 col-form-label extra-margin-bottom">Kunde</div>
             <div class="col-lg-3  extra-margin-bottom">
 
                 <input data-field="CardName" class="form-control iag-form-data" type="text" readonly
-                                         value="">
+                       value="">
 
-                <select name="CardName" id="selector_cardname" class="form-control" style="display: none;" data-live-search="true">
+                <select name="CardName" id="selector_cardname" class="form-control" style="display: none;"
+                        data-live-search="true">
 
                 </select>
 
             </div>
 
             <div class="col-lg-3 col-form-label extra-margin-bottom">Auftragsdatum</div>
-            <div class="col-lg-3 extra-margin-bottom"><input data-field="DocDate" class="form-control iag-form-data" type="text" readonly
-                                         value=""></div>
+            <div class="col-lg-3 extra-margin-bottom"><input data-field="DocDate" class="form-control iag-form-data"
+                                                             type="text" readonly
+                                                             value=""></div>
 
             <div class="col-lg-3 col-form-label extra-margin-bottom">Status</div>
-            <div class="col-lg-3 extra-margin-bottom"><input data-field="DocumentStatus" class="form-control iag-form-data" type="text"
-                                         readonly value=""></div>
+            <div class="col-lg-3 extra-margin-bottom"><input data-field="DocumentStatus"
+                                                             class="form-control iag-form-data" type="text"
+                                                             readonly value=""></div>
         </div>
     </div>
     <div class="document-lines">
         <table class="table">
             <thead>
             <tr>
-                <th>#</th>
                 <th>Artikel Nr.</th>
-                <th>Artikel</th>
+                <th class="ItemDescription">Artikel</th>
                 <th>Menge</th>
                 <th>Preis netto</th>
                 <th>Gesamtpreis netto</th>
-                <th></th>
+                <th>Währung</th>
+                <th><a href="#" class="pull-right btn btn-primary" style="display: none" id="addrow"><i
+                        class="fa fa-plus"></i></a></th>
             </tr>
             </thead>
             <tbody id="document-lines-content">
@@ -74,7 +80,8 @@
         </table>
     </div>
     <div class="sign card mb-3">
-        <div class="card-header">Unterschrift <a href="#" class="pull-right toggle-card-body"><i class="fa fa-window-maximize"></i></a></div>
+        <div class="card-header">Unterschrift <a href="#" class="pull-right toggle-card-body"><i
+                class="fa fa-window-maximize"></i></a></div>
 
         <div class="card-body">
 
@@ -94,7 +101,6 @@
 <template id="sales-order-line-template">
     <tr>
         <td class="LineNum" style="display: none"></td>
-        <td class="VisualOrder"></td>
         <td class="ItemCode"></td>
         <td class="ItemDescription"></td>
         <td class="Quantity text-right"></td>
@@ -103,10 +109,29 @@
         <td class="Currency"></td>
     </tr>
 </template>
+<template id="sales-order-newline-template">
+    <tr>
+        <td class="ItemCode"></td>
+        <td class="ItemDescription">
+            <select class="line-item form-control" data-live-search="true">
+
+            </select>
+        </td>
+        <td class="Quantity">
+            <input type="number" min="0" class="form-control text-right" style="max-width: 100px;">
+        </td>
+        <td class="Price text-right number-format"></td>
+        <td class="LineTotal text-right number-format"></td>
+        <td class="Currency">
+            <select class="line-currency form-control">
+
+            </select>
+        </td>
+    </tr>
+</template>
 <template id="sales-order-total-line-template">
 
     <tr class="doc-total-line">
-        <td></td>
         <td></td>
         <td></td>
         <td></td>
@@ -116,6 +141,9 @@
     </tr>
 </template>
 <template id="select_bp">
-    <option value="" data-type="innerHtml,value" class="CardName"></option>
+    <option value="" class="CardName"></option>
+</template>
+<template id="select_item">
+    <option value="" class="ItemName"></option>
 </template>
 </html>
