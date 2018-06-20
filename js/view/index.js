@@ -78,11 +78,25 @@ function hookArrowEvents(){
     });
 }
 
+function hookBtnLogoutEvent(){
+    $("#logout").on("click", function(event){
+        remote("POST", "/b1s/v1/Logout",
+            function onError() {
+            alert("logout failed!");
+        },
+            function onSuccess() {
+                window.location = "/login.html";
+
+            },
+            '')
+    });
+}
+
 $(document).ready(function () {
     hookHeaderEvents(updateTable);
     hookPagingEvents(updateTable);
     hookArrowEvents();
-
+    hookBtnLogoutEvent();
     updateTable('&$orderby=DocNum desc');
 
 
