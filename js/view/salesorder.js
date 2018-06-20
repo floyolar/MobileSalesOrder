@@ -147,7 +147,7 @@ function addRow() {
 
         documentData.DocumentLines[event.target.parentNode.parentNode.parentNode.dataset.index] = {
             ItemCode: itemCode,
-            Price: parseFloat(dataset.price),
+            UnitPrice: parseFloat(dataset.price),
             Quantity: 1
         };
         calculateNewTotalPrice(event.target.parentNode.parentNode.parentNode.dataset.index);
@@ -182,7 +182,7 @@ function addRow() {
         lt.text(formattedFloat(parseFloat(price.val()) * parseFloat(qty.val())));
 
         documentData.DocumentLines[index].Quantity = parseFloat(qty.val());
-        documentData.DocumentLines[index].Price = parseFloat(price.val());
+        documentData.DocumentLines[index].UnitPrice = parseFloat(price.val());
     }
 
     var removeLine = $(clone.querySelector("tr > .remove-line > a"));
@@ -294,7 +294,7 @@ function prepareSignCavas() {
 
     function resizeCanvas() {
         var offset = getOffset(canvas);
-        canvas.width = $(".card-body").innerWidth() - 40;
+        canvas.width = $(".card-body")[0].clientWidth - 40;
         canvas.height = canvas.width * 9 / 16;
         var prev_data = sign_data;
         if (prev_data && prev_data !== "") {
