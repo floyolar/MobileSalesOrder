@@ -77,9 +77,10 @@ function prepareForAdding() {
     });
     //
     $("input[data-field='DocDate']").val(formattedDate());
+    $("input[data-field='DocDueDate']").val(formattedDate());
     documentData.DocDueDate = new Date();
     documentData.DocDate = new Date();
-    $("input[data-field='DocDate']").on("change", function (event) {
+    $("input[data-field='DocDate']").add("input[data-field='DocDueDate']").on("change", function (event) {
         var date = event.target.value;
         console.log(date);
         if (!date.match(/^[0-3]\d.[0-3]\d.\d\d\d\d$/gm)) {
@@ -94,8 +95,15 @@ function prepareForAdding() {
         d.setFullYear(components[2]);
 
         console.log(d);
-        documentData.DocDueDate = d;
-        documentData.DocDate = d;
+
+        if (event.target === "DocDate"){
+
+            documentData.DocDate = d;
+        }
+        else{
+            documentData.DocDueDate = d;
+        }
+
 
     });
     getCurrencies(function (c) {
