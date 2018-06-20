@@ -81,12 +81,8 @@ $(document).ready(function () {
     hookHeaderEvents(updateTable);
     hookPagingEvents(updateTable);
     hookArrowEvents();
-    autoLogin(function onError() {
 
-        },
-        function onSuccess() {
-            updateTable('&$orderby=DocNum desc');
-        });
+    updateTable('&$orderby=DocNum desc');
 
 
 });
