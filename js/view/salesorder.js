@@ -25,31 +25,36 @@ function prepareForAdding() {
         event.preventDefault();
         addRow();
     });
+    var select_status = 0;
 
     $("select#selector_cardname").on("changed.bs.select", function (event) {
         var cardCode = $("select#selector_cardname").val();
         $("input[data-field='CardCode']").val(cardCode.toString());
         documentData.CardCode = cardCode;
-
+        select_status = 1;
     });
 
     $("select#selector_cardname").on("hide.bs.select", function (event) {
         var cardCode = $("select#selector_cardname").val();
         $("input[data-field='CardCode']").val(cardCode.toString());
         documentData.CardCode = cardCode;
-
+        select_status = 1;
     });
 
     var lastCalled = new Date().getTime();
 
     $("select#selector_cardname").on("shown.bs.select", function () {
+        select_status = 0;
         //modal shown
         var textbox = $($($("select#selector_cardname").parent().children().filter("div.dropdown-menu.show")[0].childNodes).filter("div.bs-searchbox")[0].childNodes[0]);
         textbox.on("keyup", function (e) {
+            if(select_status === 1)
+                return;
+
             var now = new Date().getTime();
             if (now - lastCalled > 500) {
                 console.log(e.target.value);
-                remote("GET", "/b1s/v1/BusinessPartners?$select=CardCode,CardName&$filter=contains(CardName, '" + e.target.value + "')", function onError() {
+                remote("GET", "/b1s/v1/BusinessPartners?$select=CardCode,CardName&$filter=contains(CardName, '" + e.target.value + "') and CardType eq 'cCustomer'", function onError() {
 
                     },
                     function onSuccess(jsonResult) {
@@ -147,7 +152,7 @@ function addRow() {
 
     });
 
-    dp.on("hide.bs.select", function (event) {
+    function updateSelect(event){
         var itemCode = dp.val();
         if (!itemCode)
             return;
@@ -163,8 +168,11 @@ function addRow() {
         };
         calculateNewTotalPrice(event.target.parentNode.parentNode.parentNode.dataset.index);
 
+    }
 
-    });
+    dp.on("hide.bs.select", updateSelect);
+    dp.on("changed.bs.select", updateSelect);
+
 
     var qty = $(clone.querySelector("tr > .Quantity > input"));
     qty.on("keypress", onQuantityChanged);

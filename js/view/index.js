@@ -85,7 +85,7 @@ $(document).ready(function () {
 
         },
         function onSuccess() {
-            updateTable();
+            updateTable('&$orderby=DocNum desc');
         });
 
 
