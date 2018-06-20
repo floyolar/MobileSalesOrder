@@ -53,7 +53,7 @@ function formattedDate(date) {
 function getListPrice(itemObject, pricelist_id) {
     var prices = itemObject.ItemPrices;
     for (var i = 0; i < prices.length; i++) {
-        if(prices[i].PriceList.toString() === pricelist_id.toString()){
+        if (prices[i].PriceList.toString() === pricelist_id.toString()) {
             return prices[i];
         }
     }
@@ -125,7 +125,8 @@ function remote(method, path, error, success, data) {
     //req.withCredentials = true; // pass along cookies
     req.onerror = error;
     req.onreadystatechange = function () {
-        if (req.readyState === 4 && (req.status === 200)) {
+        console.log(req);
+        if (req.readyState === 4 && (req.status === 200 || req.status === 201)) {
             var result = JSON.parse(req.responseText);
             console.log(result);
             success(result);
@@ -133,6 +134,7 @@ function remote(method, path, error, success, data) {
         if (req.status === 204) {
             success(null);
         }
+
     };
     req.send(JSON.stringify(data));
 }

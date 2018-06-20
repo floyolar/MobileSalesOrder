@@ -10,6 +10,7 @@ function prepareForAdding() {
         DocumentLines: []
     };
     $(".loader").hide();
+    $("div.add").show();
     $("input.form-control[readonly]").prop("readonly", null);
     $("input[data-field='DocNum']").prop("readonly", "readonly");
     $("input[data-field='CardCode']").prop("readonly", "readonly");
@@ -23,6 +24,7 @@ function prepareForAdding() {
         event.preventDefault();
         addRow();
     });
+
 
     if (/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent)) {
         $('.selectpicker').selectpicker('mobile');
@@ -59,7 +61,27 @@ function prepareForAdding() {
     });
     //
     $("input[data-field='DocDate']").val(formattedDate());
+    documentData.DocDueDate = new Date();
+    documentData.DocDate = new Date();
+    $("input[data-field='DocDate']").on("change", function (event) {
+        var date = event.target.value;
+        console.log(date);
+        if (!date.match(/^[0-3]\d.[0-3]\d.\d\d\d\d$/gm)) {
+            alert("Datum hat falsches Format!");
+            $(event.target).select();
+            return;
+        }
+        var d = new Date();
+        var components = date.split(".");
+        d.setDate(components[0]);
+        d.setMonth(components[1]);
+        d.setFullYear(components[2]);
 
+        console.log(d);
+        documentData.DocDueDate = d;
+        documentData.DocDate = d;
+
+    });
     getCurrencies(function (c) {
         currencies = c;
     });
@@ -69,7 +91,7 @@ function prepareForAdding() {
 
 function addRow() {
     console.log(documentData);
-    documentData.DocumentLines.push({});
+    documentData.DocumentLines.push({Quantity: 1});
     var template = document.querySelector("#sales-order-newline-template");
     var target = document.querySelector("#document-lines-content");
     var clone = document.importNode(template.content, true);
@@ -139,7 +161,7 @@ function addRow() {
     qty.on("change", onQuantityChanged);
     function onQuantityChanged(e) {
         console.log("quantity_changed: " + e.target.value);
-        calculateNewTotalPrice(parseInt(e.target.parentNode.parentNode.parentNode.dataset.index));
+        calculateNewTotalPrice(parseInt(e.target.parentNode.parentNode.dataset.index));
     }
 
 
@@ -151,7 +173,7 @@ function addRow() {
 
     function onPriceChanged(e) {
         console.log("price_changed: " + e.target.value);
-        calculateNewTotalPrice(parseInt(e.target.parentNode.parentNode.parentNode.dataset.index));
+        calculateNewTotalPrice(parseInt(e.target.parentNode.parentNode.dataset.index));
     }
 
     var lt = $(clone.querySelector("tr > .LineTotal"));
@@ -159,11 +181,18 @@ function addRow() {
     function calculateNewTotalPrice(index) {
         lt.text(formattedFloat(parseFloat(price.val()) * parseFloat(qty.val())));
 
-
         documentData.DocumentLines[index].Quantity = parseFloat(qty.val());
         documentData.DocumentLines[index].Price = parseFloat(price.val());
+    }
 
+    var removeLine = $(clone.querySelector("tr > .remove-line > a"));
+    removeLine.on("click", onRemoveClicked);
 
+    function onRemoveClicked(event) {
+        event.preventDefault();
+        var index = event.target.parentNode.parentNode.parentNode.dataset.index;
+        documentData.DocumentLines[index].Quantity = 0;
+        event.target.parentNode.parentNode.parentNode.parentNode.removeChild(event.target.parentNode.parentNode.parentNode);
     }
 
     var c = target.appendChild(clone);
@@ -234,10 +263,21 @@ function initialize() {
     $("#add").on("click", function (e) {
         e.preventDefault();
         console.log(documentData);
+        var dData = documentData;
+        var newLines = [];
+        for (var i = 0; i < dData.DocumentLines.length; i++) {
+            if (dData.DocumentLines[i].Quantity > 0) {
+                newLines.push(dData.DocumentLines[i]);
+            }
+        }
+        dData.DocumentLines = newLines;
+        console.log(JSON.stringify(dData));
         remote("POST", "/b1s/v1/Orders", function onError() {
         }, function onSuccess(jsonResult) {
+            console.log(jsonResult)
+            window.location = "/salesorder.html?DocEntry=" + encodeURI(jsonResult.DocEntry);
 
-        }, documentData);
+        }, dData);
     });
 
 }

@@ -66,9 +66,9 @@
             <tr>
                 <th>Artikel Nr.</th>
                 <th class="ItemDescription">Artikel</th>
-                <th>Menge</th>
-                <th>Preis netto</th>
-                <th>Gesamtpreis netto</th>
+                <th class="text-right">Menge</th>
+                <th class="text-right">Preis netto</th>
+                <th class="text-right">Gesamtpreis netto</th>
                 <th>Währung</th>
                 <th><a href="#" class="pull-right btn btn-primary" style="display: none" id="addrow"><i
                         class="fa fa-plus"></i></a></th>
@@ -82,7 +82,8 @@
 
     </div>
     <div class="sign card mb-3">
-        <div class="card-header"><i class="fa fa-pencil"></i> Unterschrift <a href="#" class="pull-right toggle-card-body"><i
+        <div class="card-header"><i class="fa fa-pencil"></i> Unterschrift <a href="#"
+                                                                              class="pull-right toggle-card-body"><i
                 class="fa fa-window-maximize"></i></a></div>
 
         <div class="card-body">
@@ -96,7 +97,7 @@
             </div>
         </div>
     </div>
-    <div class="add">
+    <div class="add" style="display:none;">
         <a href="#" class="btn btn-primary btn-block" id="add"><i class="fa fa-plus"></i> Hinzufügen</a>
     </div>
 </div>
@@ -134,7 +135,7 @@
 
             </select>
         </td>
-        <td class="pull-right">
+        <td class="pull-right remove-line">
             <a href="#" class="remove-line"><i class="fa fa-times btn-light btn"></i></a>
         </td>
     </tr>
