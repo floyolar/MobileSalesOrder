@@ -22,6 +22,7 @@ $(document).ready(function () {
                 $("div.error").show();
                 $("#err_message").text(err.responseJSON.error.message.value);
                 setLoadingState(false);
+                $("#password").select();
             },
             success: function (response) {
                 localStorage.setItem("session-raw", JSON.stringify(response));
@@ -36,8 +37,10 @@ $(document).ready(function () {
 function setLoadingState(newState) {
     if (!!newState) {
         $("#login > div > input").attr("disabled", "disabled");
+        $("#login > button").attr("disabled", "disabled");
     }
     else {
         $("#login > div > input").removeAttr("disabled");
+        $("#login > button").removeAttr("disabled");
     }
 }

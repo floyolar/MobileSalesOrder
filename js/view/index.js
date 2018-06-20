@@ -49,6 +49,7 @@ function updateTable(additional_filters, requestUrl){
         function onError(e) {
             console.error(e);
            setLoadingState(false);
+           window.location = "/login.html";
 
         },
         function onSuccess(result) {

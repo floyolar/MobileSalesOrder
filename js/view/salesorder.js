@@ -128,7 +128,7 @@ function addRow() {
         var textbox = $($(dp.parent().children().filter("div.dropdown-menu.show")[0].childNodes).filter("div.bs-searchbox")[0].childNodes[0]);
         textbox.on("keyup", function (e) {
             remote("GET", "/b1s/v1/Items?$select=ItemCode,ItemName,ItemPrices&$filter=contains(ItemName, '" + encodeURI(e.target.value) + "')", function onError() {
-
+                    window.location = "/login.html";
                 },
                 function onSuccess(jsonResult) {
                     if (!jsonResult || !jsonResult.value)
@@ -253,6 +253,8 @@ $(document).ready(function () {
 
     remote("GET", "/b1s/v1/Orders(" + docEntry + ")", function onError() {
             setLoadingState(false);
+            window.location = "/login.html";
+
         },
         function onSuccess(jsonResult) {
             setLoadingState(false);
@@ -292,8 +294,10 @@ function initialize() {
         dData.DocumentLines = newLines;
         console.log(JSON.stringify(dData));
         remote("POST", "/b1s/v1/Orders", function onError() {
+            window.location = "/login.html";
+
         }, function onSuccess(jsonResult) {
-            console.log(jsonResult)
+            console.log(jsonResult);
             window.location = "/salesorder.html?DocEntry=" + encodeURI(jsonResult.DocEntry);
 
         }, dData);
@@ -432,6 +436,7 @@ function prepareSignCavas() {
         event.preventDefault();
         var jpegData = canvas.toDataURL('image/jpeg');
         remote("PATCH", "/b1s/v1/Orders(" + documentData.DocEntry + ")", function onError() {
+                window.location = "/login.html";
 
             },
             function onSuccess(result) {
