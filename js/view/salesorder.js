@@ -11,6 +11,7 @@ function prepareForAdding() {
     };
     $(".loader").hide();
     $("div.add").show();
+    $("div.sign").hide();
     $("input.form-control[readonly]").prop("readonly", null);
     $("input[data-field='DocNum']").prop("readonly", "readonly");
     $("input[data-field='CardCode']").prop("readonly", "readonly");
@@ -25,11 +26,6 @@ function prepareForAdding() {
         addRow();
     });
 
-
-    if (/Android|webOS|iPhone|iPad|iPod|BlackBerry/i.test(navigator.userAgent)) {
-        $('.selectpicker').selectpicker('mobile');
-    }
-
     $("select#selector_cardname").on("changed.bs.select", function (event) {
         var cardCode = $("select#selector_cardname").val();
         $("input[data-field='CardCode']").val(cardCode.toString());
@@ -37,25 +33,40 @@ function prepareForAdding() {
 
     });
 
+    $("select#selector_cardname").on("hide.bs.select", function (event) {
+        var cardCode = $("select#selector_cardname").val();
+        $("input[data-field='CardCode']").val(cardCode.toString());
+        documentData.CardCode = cardCode;
+
+    });
+
+    var lastCalled = new Date().getTime();
+
     $("select#selector_cardname").on("shown.bs.select", function () {
         //modal shown
         var textbox = $($($("select#selector_cardname").parent().children().filter("div.dropdown-menu.show")[0].childNodes).filter("div.bs-searchbox")[0].childNodes[0]);
         textbox.on("keyup", function (e) {
-            console.log(e.target.value);
-            remote("GET", "/b1s/v1/BusinessPartners?$select=CardCode,CardName&$filter=contains(CardName, '" + e.target.value + "')", function onError() {
+            var now = new Date().getTime();
+            if (now - lastCalled > 500) {
+                console.log(e.target.value);
+                remote("GET", "/b1s/v1/BusinessPartners?$select=CardCode,CardName&$filter=contains(CardName, '" + e.target.value + "')", function onError() {
 
-                },
-                function onSuccess(jsonResult) {
-                    if (!jsonResult || !jsonResult.value)
-                        return;
-                    fillData("#selector_cardname", "#select_bp", jsonResult.value, function () {
-                        $("select#selector_cardname").selectpicker('refresh');
-                    }, false, function setValue(itm, value, obj) {
-                        //itm.dataset.CardCode = obj.CardCode;
-                        itm.value = obj.CardCode;
-                        return itm;
+                    },
+                    function onSuccess(jsonResult) {
+                        if (!jsonResult || !jsonResult.value)
+                            return;
+                        fillData("#selector_cardname", "#select_bp", jsonResult.value, function () {
+                            $("select#selector_cardname").selectpicker('refresh');
+                        }, false, function setValue(itm, value, obj) {
+                            //itm.dataset.CardCode = obj.CardCode;
+                            itm.value = obj.CardCode;
+                            return itm;
+                        });
                     });
-                });
+            }
+            else{
+                window.setTimeout(this(e), 100);
+            }
         });
 
     });
