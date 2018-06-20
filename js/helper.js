@@ -122,6 +122,7 @@ function remote(method, path, error, success, data) {
         req.setRequestHeader("Content-Type", "application/json");
 
     req.setRequestHeader('postman-token', localStorage.getItem("session"));
+    req.setRequestHeader('B1S-CaseInsensitive', true);
     //req.withCredentials = true; // pass along cookies
     req.onerror = error;
     req.onreadystatechange = function () {
