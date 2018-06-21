@@ -135,6 +135,9 @@ function remote(method, path, error, success, data) {
         if (req.status === 204) {
             success(null);
         }
+        if (req.status === 401){
+            error("Autorisierung fehlgeschlagen!");
+        }
 
     };
     req.send(JSON.stringify(data));

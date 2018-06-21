@@ -85,6 +85,10 @@ function hookBtnLogoutEvent(){
             alert("logout failed!");
         },
             function onSuccess() {
+                setLoadingState(true);
+                localStorage.setItem("session-raw", null);
+                localStorage.setItem("session", null);
+                setLoadingState(false);
                 window.location = "/login.html";
 
             },
