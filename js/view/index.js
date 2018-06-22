@@ -43,12 +43,13 @@ function updateTable(additional_filters, requestUrl){
     if(!additional_filters)
         additional_filters = '';
     if(!requestUrl)
-        requestUrl = "/b1s/v1/Orders?$filter=DocumentStatus eq 'bost_Open'&$select=DocEntry,DocNum,DocDate,CardCode,CardName,DocTotal,DocCurrency";
+        requestUrl = "/b1s/v1/Orders?$filter=DocumentStatus eq 'bost_Open'&$select=DocEntry,DocNum,DocDate,CardCode,CardName,DocTotal,DocCurrency,U_ISSIGNED";
 
     remote("GET", requestUrl + additional_filters,
         function onError(e) {
             console.error(e);
            setLoadingState(false);
+           window.location = "/login.html";
 
         },
         function onSuccess(result) {
@@ -77,16 +78,30 @@ function hookArrowEvents(){
     });
 }
 
+function hookBtnLogoutEvent(){
+    $("#logout").on("click", function(event){
+        remote("POST", "/b1s/v1/Logout",
+            function onError() {
+            alert("logout failed!");
+        },
+            function onSuccess() {
+                setLoadingState(true);
+                localStorage.setItem("session-raw", null);
+                localStorage.setItem("session", null);
+                setLoadingState(false);
+                window.location = "/login.html";
+
+            },
+            '')
+    });
+}
+
 $(document).ready(function () {
     hookHeaderEvents(updateTable);
     hookPagingEvents(updateTable);
     hookArrowEvents();
-    autoLogin(function onError() {
-
-        },
-        function onSuccess() {
-            updateTable();
-        });
+    hookBtnLogoutEvent();
+    updateTable('&$orderby=DocNum desc');
 
 
 });

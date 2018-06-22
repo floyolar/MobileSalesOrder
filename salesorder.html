@@ -4,77 +4,120 @@
     <meta charset="UTF-8">
     <title>MobileSalesOrder</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="node_modules/bootswatch/dist/flatly/bootstrap.min.css">
+    <link rel="stylesheet" href="node_modules/bootswatch/dist/yeti/bootstrap.min.css">
     <link rel="stylesheet" href="css/helper.css">
     <link rel="stylesheet" href="css/custom.css">
     <link rel="stylesheet" href="css/salesorder.css">
     <link rel="stylesheet" href="/node_modules/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="node_modules/bootstrap-select/dist/css/bootstrap-select.min.css">
     <script src="node_modules/jquery/dist/jquery.min.js"></script>
     <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="node_modules/underscore/underscore-min.js"></script>
     <script src="js/helper.js"></script>
     <script src="js/view/salesorder.js"></script>
+    <script src="node_modules/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
 </head>
 <body class="bg-light">
 <div class="container">
-    <h1>Kundenauftrag</h1>
+
+    <h1><a href="/index.html"><i class="fa fa-arrow-left"></i></a> Kundenauftrag</h1>
     <div class="loader">
         <i class="fa fa-spin fa-cog"></i>
     </div>
     <div class="document-head">
         <div class="row">
-            <div class="col-lg-3 col-form-label">Auftragsnummer</div>
-            <div class="col-lg-3"><input data-field="DocNum" class="form-control iag-form-data" type="text" readonly value=""></div>
+            <div class="col-lg-3 col-form-label extra-margin-bottom">Auftragsnummer</div>
+            <div class="col-lg-3 extra-margin-bottom"><input data-field="DocNum" class="form-control iag-form-data"
+                                                             type="text" readonly
+                                                             value=""></div>
 
-            <div class="col-lg-3 col-form-label">Kundennr.</div>
-            <div class="col-lg-3"><input data-field="CardCode" class="form-control iag-form-data" type="text" readonly value=""></div>
+            <div class="col-lg-3 col-form-label extra-margin-bottom">Kundennr.</div>
+            <div class="col-lg-3  extra-margin-bottom"><input data-field="CardCode" class="form-control iag-form-data"
+                                                              type="text" readonly
+                                                              value=""></div>
 
-            <div class="col-lg-3 col-form-label">Kunde</div>
-            <div class="col-lg-3"><input data-field="CardName" class="form-control iag-form-data" type="text" readonly value=""></div>
+            <div class="col-lg-3 col-form-label extra-margin-bottom">Kunde</div>
+            <div class="col-lg-3  extra-margin-bottom">
 
-            <div class="col-lg-3 col-form-label">Auftragsdatum</div>
-            <div class="col-lg-3"><input data-field="DocDate" class="form-control iag-form-data" type="text" readonly value=""></div>
+                <input data-field="CardName" class="form-control iag-form-data" type="text" readonly
+                       value="">
 
-            <div class="col-lg-3 col-form-label">Status</div>
-            <div class="col-lg-3"><input data-field="DocumentStatus" class="form-control iag-form-data" type="text" readonly value=""></div>
+                <select name="CardName" id="selector_cardname" class="form-control" style="display: none;"
+                        data-live-search="true">
+
+                </select>
+
+            </div>
+
+            <div class="col-lg-3 col-form-label extra-margin-bottom">Auftragsdatum</div>
+            <div class="col-lg-3 extra-margin-bottom"><input data-field="DocDate" class="form-control iag-form-data"
+                                                             type="text" readonly
+                                                             value=""></div>
+
+            <div class="col-lg-3 col-form-label extra-margin-bottom">Status</div>
+            <div class="col-lg-3 extra-margin-bottom"><input data-field="DocumentStatus"
+                                                             class="form-control iag-form-data" type="text"
+                                                             readonly value=""></div>
+
+            <div class="col-lg-3 col-form-label extra-margin-bottom" >Lieferdatum</div>
+            <div class="col-lg-3 extra-margin-bottom"><input data-field="DocDueDate" class="form-control iag-form-data"
+                                                             type="text" readonly
+                                                             value=""></div>
+
+
         </div>
     </div>
     <div class="document-lines">
         <table class="table">
             <thead>
             <tr>
-                <th>#</th>
                 <th>Artikel Nr.</th>
-                <th>Artikel</th>
-                <th>Menge</th>
-                <th>Preis netto</th>
-                <th>Gesamtpreis netto</th>
-                <th></th>
+                <th class="ItemDescription">Artikel</th>
+                <th class="text-right">Menge</th>
+                <th class="text-right">Preis netto</th>
+                <th class="text-right">Gesamtpreis netto</th>
+                <th>Währung</th>
+                <th>Zeile löschen</th>
             </tr>
             </thead>
             <tbody id="document-lines-content">
 
             </tbody>
+
         </table>
+
     </div>
-    <div class="sign">
-        <canvas id="sign-canvas"></canvas>
-        <div class="btn-group " role="group">
-            <a href="#" class="btn btn-warning" id="reset-canvas">Zurücksetzten</a>
-            <a class="btn btn-info" id="export-canvas" ><i class="fa fa-save"></i> als JPG speichern</a>
-            <a href="#" class="btn btn-secondary" id="save-canvas">Speichern</a>
+    <div class="sign card mb-3">
+        <div class="card-header"><i class="fa fa-pencil"></i> Unterschrift <a href="#"
+                                                                              class="pull-right toggle-card-body"><i
+                class="fa fa-window-maximize"></i></a></div>
+
+        <div class="card-body">
+
+
+            <canvas id="sign-canvas"></canvas>
+            <div class="btn-group canvas-controls" role="group">
+                <a href="#" class="btn btn-light" id="reset-canvas"><i class="fa fa-times"></i> Zurücksetzten</a>
+                <a class="btn btn-light" id="export-canvas"><i class="fa fa-download"></i> als JPG exportieren</a>
+                <a href="#" class="btn btn-primary" id="save-canvas"><i class="fa fa-save"></i> Speichern</a>
+            </div>
         </div>
+
+    </div>
+    <div class="addRow" style="...">
+        <p><a href="#" class="btn btn-primary" style="display: none" id="addrow"><i
+                class="fa fa-plus"></i> Zeile hinzufügen</a></p>
+    </div>
+    <div class="add" style="display:none;">
+        <a href="#" class="btn btn-primary btn-block" id="add"><i class="fa fa-plus"></i> Auftrag Hinzufügen</a>
     </div>
 </div>
 </body>
 
 
-
-
 <template id="sales-order-line-template">
     <tr>
         <td class="LineNum" style="display: none"></td>
-        <td class="VisualOrder"></td>
         <td class="ItemCode"></td>
         <td class="ItemDescription"></td>
         <td class="Quantity text-right"></td>
@@ -83,16 +126,46 @@
         <td class="Currency"></td>
     </tr>
 </template>
+<template id="sales-order-newline-template">
+    <tr>
+        <td class="ItemCode"></td>
+        <td class="ItemDescription">
+            <select class="line-item form-control" data-live-search="true">
+
+            </select>
+        </td>
+        <td class="Quantity">
+            <input type="number" min="0" value="1" class="form-control text-right" style="min-width: 80px;">
+        </td>
+        <td class="Price" style="min-width: 80px;">
+            <input type="number" class="form-control text-right price" min="0" step=.01>
+        </td>
+        <td class="LineTotal text-right number-format"></td>
+        <td class="Currency">
+            <select class="line-currency form-control">
+
+            </select>
+        </td>
+        <td class="pull-right remove-line">
+            <a href="#" class="remove-line"><i class="fa fa-times btn-light btn"></i></a>
+        </td>
+    </tr>
+</template>
 <template id="sales-order-total-line-template">
 
     <tr class="doc-total-line">
         <td></td>
         <td></td>
         <td></td>
-        <td></td>
-        <th>Gesamt</th>
+        <th>Gesamt (inkl. Steuern)</th>
         <th class="DocTotal text-right number-format"></th>
         <th class="DocCurrency"></th>
     </tr>
+</template>
+<template id="select_bp">
+    <option value="" class="CardName"></option>
+</template>
+<template id="select_item">
+    <option value="" class="ItemName"></option>
 </template>
 </html>

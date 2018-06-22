@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MobileSalesOrder</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="node_modules/bootswatch/dist/yeti/bootstrap.min.css">
+    <link rel="stylesheet" href="css/helper.css">
+    <link rel="stylesheet" href="css/custom.css">
+    <link rel="stylesheet" href="css/login.css">
+    <link rel="stylesheet" href="/node_modules/font-awesome/css/font-awesome.min.css">
+    <script src="node_modules/jquery/dist/jquery.min.js"></script>
+    <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="node_modules/underscore/underscore-min.js"></script>
+    <script src="js/helper.js"></script>
+    <script src="js/view/login.js"></script>
+</head>
+<body class="bg-light">
+<div class="container">
+    <div class="card login-card">
+        <div class="card-header"><i class="fa fa-user"></i> Login</div>
+        <div class="card-body">
+            <form id="login">
+                <div class="form-group">
+                    <label for="username" class="form-label">Benutzer</label>
+                    <input type="text" name="username" autocomplete="off" id="username" class="form-control">
+                </div>
+                <div class="form-group">
+                    <label for="username" class="form-label">Passwort</label>
+                    <input type="password" name="password" autocomplete="off" id="password" class="form-control">
+                </div>
+                <div class="alert alert-warning error" style="display: none;" >
+                    <h4>Anmeldung fehlgeschlagen!</h4>
+                    <p id="err_message"></p>
+                </div>
+                <button type="submit" class="btn-primary btn btn-block"><i class="fa fa-sign-in"></i> Anmelden</button>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>
