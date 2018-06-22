@@ -1,4 +1,4 @@
-# MobileSalesOrder
+il# MobileSalesOrder
 Mobile Sales Order App for SAP business one(SBO) HANA Service Layer(SL)
 
 Es handelt sich um eine Demosoftware für den Zugriff eines WebFrontends auf die Businesslogic von SBO über den Servicelayer.
@@ -29,4 +29,4 @@ UDF im Auftrag (ORDR) U_ISSIGNED, ALpha(1) - ist ein Flag, ob der Auftrag bereit
 UDF im Auftrag (ORDR) U_Sign, Text - enthält die Unterschrift als Base64 String vom Jpeg der Unterschrift
 Auftrags-Layout, z.B. CLD, welche den Text wieder in ein JPEG verwandelt und dieses unterhalb des Gesamtpreises anzeigt.
 
-Bei Fragen, einfach hier stellen...
+Bei Fragen, einfach eine Mail...
